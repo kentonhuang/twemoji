@@ -1,0 +1,9 @@
+.Home {
+  width: 40%;
+  margin: 0px auto;
+}
+
+.Tweets {
+  display: flex;
+  flex-direction: column
+}
