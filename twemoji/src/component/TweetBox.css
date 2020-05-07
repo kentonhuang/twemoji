@@ -1,0 +1,5 @@
+.textbox {
+  resize: none;
+  min-height: 75px;
+  width: 100%;
+}

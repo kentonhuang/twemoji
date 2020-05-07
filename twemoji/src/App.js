@@ -4,12 +4,34 @@ import './App.css';
 import Home from './home/Home'
 
 import AuthContext from './context/AuthContext'
+import TweetContext from './context/TweetsContext'
+import Tweet from './component/Tweet';
 
 const user = localStorage.getItem("user")
 const email = localStorage.getItem("email")
 const token = localStorage.getItem("token")
 
-console.log(user, email, token)
+const initialTweets = {
+  tweets: [],
+}
+
+const tweetReducer = (state, action) => {
+  switch(action.type) {
+    case 'GET_TWEETS':
+      return {
+        ...state,
+        tweets: action.payload.tweets
+      };
+    case 'ADD_NEW_TWEET':
+      state.tweets.unshift(action.payload)
+      return {
+        ...state,
+        tweets: state.tweets
+      }
+    default:
+      return state
+  }
+}
 
 const initialState = {
   isAuthenticated: user && email && token ? true : false,
@@ -47,8 +69,7 @@ const reducer = (state, action) => {
 
 function App() {
   const [state, dispatch] = React.useReducer(reducer, initialState)
-
-  console.log(state)
+  const [tweetState, tweetDispatch] = React.useReducer(tweetReducer, initialTweets)
 
   return (
     <AuthContext.Provider
@@ -57,9 +78,14 @@ function App() {
         dispatch
       }}
     >
-      <div className="App">
-          <Home/>
-      </div>
+      <TweetContext.Provider value={{
+        tweetState,
+        tweetDispatch
+      }}>
+        <div className="App">
+            <Home/>
+        </div>
+      </TweetContext.Provider>
     </AuthContext.Provider>
   );
 }

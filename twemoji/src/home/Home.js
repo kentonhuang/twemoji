@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import Tweet from '../component/Tweet'
 import LoginContainer from '../component/LoginContainer'
+import TweetsContext from '../context/TweetsContext';
 
 import './Home.css'
 
 const Home = () => {
+
   const url = 'http://localhost:3005/tweets'
+
+  const {tweetState, tweetDispatch} = useContext(TweetsContext)
 
   const [homeTweets, setHomeTweets] = useState({})
   const [loading, setLoading] = useState(true)
@@ -19,24 +23,31 @@ const Home = () => {
 
       try {
         const res = await axios.get(url)
-        setHomeTweets(res.data)
-        console.log(res.data)
+        const payload = {
+          tweets: res.data
+        }
+        await tweetDispatch({
+          type: 'GET_TWEETS',
+          payload
+        })
+        return setLoading(false)
       }catch(e) {
         setError(true)
       }
-      setLoading(false)
     }
     getData()
   }, [])
 
+  console.log(tweetState)
+
   return (
     <div className="Home">
       <LoginContainer />
-      {loading ? (
+      {tweetState.tweets.length === 0 ? (
         <div>Loading</div>
       ) : (
         <div className="Tweets">
-          {homeTweets.map((tweet) => <Tweet key={tweet._id} data={tweet}/>)}
+          {tweetState.tweets.map((tweet) => <Tweet key={tweet._id} data={tweet}/>)}
         </div>
       )}
     </div>
