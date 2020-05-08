@@ -5,6 +5,7 @@ import LoginContainer from '../component/LoginContainer'
 import TweetsContext from '../context/TweetsContext';
 
 import './Home.css'
+import TopContainer from '../component/TopContainer';
 
 const Home = () => {
 
@@ -42,7 +43,7 @@ const Home = () => {
 
   return (
     <div className="Home">
-      <LoginContainer />
+      <TopContainer />
       {tweetState.tweets.length === 0 ? (
         <div>Loading</div>
       ) : (

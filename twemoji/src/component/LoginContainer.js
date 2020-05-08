@@ -1,16 +1,20 @@
-import React, {useContext} from 'react'
+import React, {useState} from 'react'
 import "./LoginContainer.css"
 import Login from './Login'
-import TweetBox from './TweetBox'
-import AuthContext from '../context/AuthContext'
+import Register from './Register'
 
 const LoginContainer = () => {
 
-  const { state } = useContext(AuthContext)
+  const [loginToggle, setLoginToggle] = useState(true)
+
+  const toggleLogin = () => {
+    console.log('hey')
+    setLoginToggle(!loginToggle)
+  }
 
   return (
     <div className="login-container">
-      {!state.isAuthenticated ? <Login /> : <TweetBox />}
+      {loginToggle ? <Login toggle={toggleLogin}/> : <Register toggle={toggleLogin}/>}
     </div>
   )
 }

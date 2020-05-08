@@ -2,7 +2,7 @@ import React, {useState, useContext, useEffect} from 'react'
 import axios from 'axios'
 import AuthContext from '../context/AuthContext'
 
-const Login = () => {
+const Login = ({toggle}) => {
 
   const {dispatch} = useContext(AuthContext)
 
@@ -59,6 +59,7 @@ const Login = () => {
         <input type="password" placeholder='Password'value={password} onChange={passChange} />
         <button type="submit">Login</button>
       </form>
+      <span onClick={toggle}>Sign up</span>
     </div>
   )
 }
