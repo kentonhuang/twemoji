@@ -35,11 +35,13 @@ const Register = ({toggle}) => {
         type: 'LOGIN',
         payload: {
           token: res.data.token,
-          user: res.data.user.username,
-          email: res.data.user.email
+          username: res.data.user.username,
+          email: res.data.user.email,
+          displayName: res.data.user.displayName,
+          _id: res.data.user._id,
         }
       })
-      
+      return 
     } catch(e) {
       console.log(e.response)
     }

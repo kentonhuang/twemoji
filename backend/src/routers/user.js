@@ -23,6 +23,7 @@ router.post('/users/login', async (req, res) => {
     const token = await user.generateAuthToken()
     res.send({ user, token })
   } catch (e) {
+    console.log(e)
     res.status(400).send({error: 'Login Failed'})
   }
 })
@@ -38,6 +39,16 @@ router.post('/users/logout', auth, async (req, res) => {
   } catch (e) {
     res.status(500).send()
   }
+})
+
+router.get('/users', async (req, res) => {
+  try {
+    const records = await User.find().where('_id').in(req.query.ids).select('-tokens').exec()
+    res.status(200).send(records)
+  } catch (e) {
+    res.status(400).send()
+  }
+  res.send()
 })
 
 module.exports = router

@@ -5,11 +5,29 @@ import Home from './home/Home'
 
 import AuthContext from './context/AuthContext'
 import TweetContext from './context/TweetsContext'
-import Tweet from './component/Tweet';
+import UsersContext from './context/UsersContext'
 
-const user = localStorage.getItem("user")
+const username = localStorage.getItem("username")
 const email = localStorage.getItem("email")
 const token = localStorage.getItem("token")
+const _id = localStorage.getItem("_id")
+const displayName = localStorage.getItem("displayName")
+
+const initialUsers = {
+  users: []
+}
+
+const usersReducer = (state, action) => {
+  switch(action.type) {
+    case 'GET_USERS':
+      return {
+        ...state,
+        users: action.payload.users
+      };
+    default:
+      return state
+  }
+}
 
 const initialTweets = {
   tweets: [],
@@ -34,33 +52,40 @@ const tweetReducer = (state, action) => {
 }
 
 const initialState = {
-  isAuthenticated: user && email && token ? true : false,
-  user: user || null,
+  isAuthenticated: _id && username && email && token ? true : false,
+  username: username || null,
   email: email || null,
   token: token || null,
+  _id: _id || null,
+  displayName: displayName || null,
 };
 
 const reducer = (state, action) => {
   switch(action.type) {
     case 'LOGIN':
-      localStorage.setItem("user", action.payload.user);
+      localStorage.setItem("username", action.payload.username);
       localStorage.setItem("email", action.payload.email);
       localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("_id", action.payload._id);
       return {
         ...state,
         isAuthenticated: true,
-        user: action.payload.user,
+        username: action.payload.username,
         email: action.payload.email,
-        token: action.payload.token
+        token: action.payload.token,
+        _id: action.payload._id,
+        displayName: action.payload.displayName
       };
     case 'LOGOUT': 
       localStorage.clear()
       return {
         ...state,
         isAuthenticated: false,
-        user: null,
+        username: null,
         email: null,
         token: null,
+        _id: null,
+        displayName: null
       };
     default:
       return state
@@ -68,8 +93,12 @@ const reducer = (state, action) => {
 }
 
 function App() {
+
   const [state, dispatch] = React.useReducer(reducer, initialState)
   const [tweetState, tweetDispatch] = React.useReducer(tweetReducer, initialTweets)
+  const [usersState, usersDispatch] = React.useReducer(usersReducer, initialUsers)
+
+  console.log(state)
 
   return (
     <AuthContext.Provider
@@ -82,9 +111,15 @@ function App() {
         tweetState,
         tweetDispatch
       }}>
-        <div className="App">
-            <Home/>
-        </div>
+        <UsersContext.Provider value ={{
+          usersState,
+          usersDispatch
+        }}
+        >
+          <div className="App">
+              <Home/>
+          </div>
+        </UsersContext.Provider>
       </TweetContext.Provider>
     </AuthContext.Provider>
   );

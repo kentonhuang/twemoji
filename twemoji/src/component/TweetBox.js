@@ -43,10 +43,21 @@ const TweetBox = () => {
       }, {
         headers: {Authorization: `Bearer ${state.token}`}
       })
+      console.log(res.data)
+      const payload = {
+        ...res.data,
+      }
+      const user = {
+        ...state
+      } 
+      console.log(user)
+      console.log(state)
+      console.log(payload)
       await tweetDispatch({
         type: 'ADD_NEW_TWEET',
-        payload: res.data
-      })
+        payload,
+        }
+      )
       setTweetContent('')
       return
     } catch (e) {

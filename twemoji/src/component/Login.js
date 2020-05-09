@@ -23,13 +23,15 @@ const Login = ({toggle}) => {
     try {
       const res = await axios.post(url, {
         email,
-        password
+        password  
       })
       console.log(res.data)
       const payload = {
         token: res.data.token,
-        user: res.data.user.username,
+        username: res.data.user.username,
         email: res.data.user.email,
+        _id: res.data.user._id,
+        displayName: res.data.user.displayName
       }
       await dispatch({
         type: 'LOGIN',

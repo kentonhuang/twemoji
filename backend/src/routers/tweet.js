@@ -22,6 +22,7 @@ router.get('/tweets', async (req, res) => {
   const tweets = await Tweet.find({})
   .limit(20)
   .sort({ createdAt: -1 })
+  .exec()
 
   res.send(tweets)
 })

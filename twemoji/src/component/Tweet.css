@@ -22,3 +22,20 @@
   object-fit: scale-down;
   border-radius: 50px;
 }
+
+.content {
+  width: 100%;
+  padding-right: 10px;
+}
+
+.content-info {
+  height: 25px;
+}
+
+.display-name {
+  padding-right: 5px;
+}
+
+.username {
+  color: #888
+}
