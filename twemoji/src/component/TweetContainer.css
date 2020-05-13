@@ -1,0 +1,4 @@
+.Tweets {
+  display: flex;
+  flex-direction: column
+}

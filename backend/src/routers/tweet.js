@@ -1,6 +1,8 @@
+const User = require('../models/user')
 const express = require('express')
 const Tweet = require('../models/tweet')
 const auth = require('../middleware/auth')
+const ObjectId = require('mongodb').ObjectID
 
 const router = new express.Router()
 
@@ -19,12 +21,28 @@ router.post('/tweets', auth, async (req, res) => {
 })
 
 router.get('/tweets', async (req, res) => {
-  const tweets = await Tweet.find({})
-  .limit(20)
-  .sort({ createdAt: -1 })
-  .exec()
 
-  res.send(tweets)
+  const query = {}
+
+  if(req.query.username) {
+    try {
+      const user = await User.find({'username': req.query.username}).exec()
+      query['owner'] = user[0]._id
+    } catch (e) {
+      res.status(400).send(e)
+    }
+  }
+  try {
+    const tweets = await Tweet.find(query)
+    .limit(20)
+    .sort({ createdAt: -1 })
+    .exec()
+   
+    return res.send(tweets)
+  } catch (e){
+    res.status(400).send(e)
+  }
+
 })
 
 module.exports = router

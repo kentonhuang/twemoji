@@ -1,7 +1,15 @@
 import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom"
 import './App.css';
 
 import Home from './home/Home'
+import Profile from './component/Profile'
+import Navigation from './component/Navigation'
 
 import AuthContext from './context/AuthContext'
 import TweetContext from './context/TweetsContext'
@@ -98,8 +106,6 @@ function App() {
   const [tweetState, tweetDispatch] = React.useReducer(tweetReducer, initialTweets)
   const [usersState, usersDispatch] = React.useReducer(usersReducer, initialUsers)
 
-  console.log(state)
-
   return (
     <AuthContext.Provider
       value={{
@@ -117,7 +123,17 @@ function App() {
         }}
         >
           <div className="App">
-              <Home/>
+            <Router>
+              <Navigation />
+              <Switch>
+                <Route path="/profile/:id">
+                  <Profile/>
+                </Route>
+                <Route path="/">
+                  <Home/>
+                </Route>
+              </Switch>
+            </Router>
           </div>
         </UsersContext.Provider>
       </TweetContext.Provider>

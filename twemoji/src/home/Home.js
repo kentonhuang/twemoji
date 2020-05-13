@@ -8,6 +8,7 @@ import UsersContext from '../context/UsersContext'
 
 import './Home.css'
 import TopContainer from '../component/TopContainer';
+import TweetContainer from '../component/TweetContainer';
 
 const Home = () => {
 
@@ -18,7 +19,6 @@ const Home = () => {
   const {usersState, usersDispatch} = useContext(UsersContext)
   const {state, dispatch} = useContext(AuthContext)
 
-  const [homeTweets, setHomeTweets] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
@@ -42,11 +42,15 @@ const Home = () => {
           return self.indexOf(id) === index
         })
 
+        console.log(userIds)
+
         const userList = await axios.get(usersUrl, {
           params: {
             ids: userIds
           }
         })
+
+        console.log(userList)
 
         await usersDispatch({
           type: 'GET_USERS',
@@ -62,31 +66,13 @@ const Home = () => {
     getData()
   }, [])
 
-  const mapTweets = () => {
-
-    if(loading) {
-      return
-    }
-    return tweetState.tweets.map((tweet) => {
-      const owner = tweet.owner
-      const index = usersState.users.findIndex(obj => obj._id === owner)
-      tweet.user = usersState.users[index]
-      if(!tweet.user) {
-        tweet.user = state
-      }
-      return <Tweet key={tweet._id} data={tweet}/>
-    })
-  }
-
   return (
     <div className="Home">
       <TopContainer />
-      {tweetState.tweets.length === 0 ? (
+      {loading ? (
         <div>Loading</div>
       ) : (
-        <div className="Tweets">
-          {mapTweets()}
-        </div>
+        <TweetContainer tweets={tweetState.tweets} userList={usersState.users} auth={state}/>
       )}
     </div>
   )

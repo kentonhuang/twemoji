@@ -41,14 +41,22 @@ router.post('/users/logout', auth, async (req, res) => {
   }
 })
 
+router.get('/users/:username', async (req, res) => {
+  try {
+    const user = await User.findOne({'username': req.params.username}).exec()
+    return res.status(200).send(user)
+  } catch (e) {
+    return res.status(400).send()
+  }
+})
+
 router.get('/users', async (req, res) => {
   try {
     const records = await User.find().where('_id').in(req.query.ids).select('-tokens').exec()
-    res.status(200).send(records)
+    return res.status(200).send(records)
   } catch (e) {
-    res.status(400).send()
+    return res.status(400).send()
   }
-  res.send()
 })
 
 module.exports = router
