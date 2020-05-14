@@ -3,6 +3,8 @@ const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+const Following = require('./following')
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -45,7 +47,15 @@ const userSchema = new mongoose.Schema({
     }
   }]
 }, {
-  timestamps: true
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+})
+
+userSchema.virtual('follows', {
+  ref: 'Following',
+  localField: 'username',
+  foreignField: 'username'
 })
 
 userSchema.methods.toJSON = function() {

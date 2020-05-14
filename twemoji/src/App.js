@@ -75,6 +75,7 @@ const reducer = (state, action) => {
       localStorage.setItem("email", action.payload.email);
       localStorage.setItem("token", action.payload.token);
       localStorage.setItem("_id", action.payload._id);
+      localStorage.setItem("displayName", action.payload.displayName);
       return {
         ...state,
         isAuthenticated: true,
@@ -124,7 +125,7 @@ function App() {
         >
           <div className="App">
             <Router>
-              <Navigation />
+              <Navigation auth={state}/>
               <Switch>
                 <Route path="/profile/:id">
                   <Profile/>

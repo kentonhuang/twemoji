@@ -23,6 +23,9 @@ const Profile = () => {
   const [user, setUser] = useState({})
   const [error, setError] = useState(false)
 
+
+
+// MOVE THIS TO ITS OWN FILE
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -72,7 +75,9 @@ const Profile = () => {
     getUser()
   }, [])
 
-  console.log(user)
+const handleFollow = (e) => {
+  
+}
 
   return (
     <div className="profile">
@@ -83,7 +88,7 @@ const Profile = () => {
         <img src={image} />
         <div className="profile-buttons-container">
           <div className="profile-buttons">
-            <button>Follow</button>
+            <button onClick={handleFollow}>Follow</button>
           </div>
         </div>
         <span className="profile-display">{user.displayName}</span> 

@@ -1,5 +1,6 @@
 const express = require('express')
 const User = require('../models/user')
+const Following = require('../models/following')
 const auth = require('../middleware/auth')
 
 const router = new express.Router()
@@ -9,6 +10,11 @@ router.post('/users', async (req, res) => {
 
   try {
     await user.save()
+    const following = new Following({
+      userID: user._id,
+      username: user.username
+    })
+    await following.save()
     const token = await user.generateAuthToken()
     res.status(201).send({user, token})
   } catch (e) {
@@ -54,6 +60,16 @@ router.get('/users', async (req, res) => {
   try {
     const records = await User.find().where('_id').in(req.query.ids).select('-tokens').exec()
     return res.status(200).send(records)
+  } catch (e) {
+    return res.status(400).send()
+  }
+})
+
+router.get('/user/following/:username', async (req, res) => {
+  try {
+    const user = await User.findOne({'username': req.params.username}).populate('follows').exec()
+    console.log(user)
+    return res.status(200).send(user)
   } catch (e) {
     return res.status(400).send()
   }
