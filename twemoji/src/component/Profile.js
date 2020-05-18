@@ -5,6 +5,8 @@ import './Profile.css'
 
 import TweetsContext from '../context/TweetsContext'
 import UsersContext from '../context/UsersContext'
+import FollowContext from '../context/FollowContext'
+import AuthContext from '../context/AuthContext'
 
 import TweetContainer from './TweetContainer'
 
@@ -13,12 +15,15 @@ import image from '../icon/Twitter_egg_avatar.png'
 const Profile = () => {
   const {tweetState, tweetDispatch} = useContext(TweetsContext)
   const {usersState, usersDispatch} = useContext(UsersContext)
+  const {followState, followDispatch} = useContext(FollowContext)
+  const {state} = useContext(AuthContext)
 
   let { id } = useParams();
 
   const usersUrl = 'http://localhost:3005/users'
   const url = `http://localhost:3005/tweets?username=${id}`
   const followURL = `http://localhost:3005/following/${id}`
+  const userFollowing = `http://localhost:3005/user/following/${state.username}`
 
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState({})
@@ -74,14 +79,52 @@ const Profile = () => {
     getUser()
   }, [])
 
-const handleFollow = async (e) => {
+const handleFollow = async () => {
   try {
-    const res = axios.post(followURL)
-    console.log(res)
+    const follow = await axios.post(followURL, null, {
+      headers: { Authorization: `Bearer ${state.token}`}
+    })
+    const follows = await axios.get(userFollowing)
+    await followDispatch({
+      type: 'GET_FOLLOWING',
+      payload: {
+        following: follows.data.follows[0].following
+      }
+    })
   } catch(e) {
-
   }
 }
+
+const handleUnfollow = async () => {
+  try {
+    const follow = await axios.patch(followURL, null, {
+      headers: { Authorization: `Bearer ${state.token}`}
+    })
+    const follows = await axios.get(userFollowing)
+    await followDispatch({
+      type: 'GET_FOLLOWING',
+      payload: {
+        following: follows.data.follows[0].following
+      }
+    })
+  } catch(e) {
+  }
+}
+
+const renderFollowButton = () => {
+  if(user) {
+    if(followState.following.find((ele) => ele.user_id === user._id)) {
+      return <button onClick={handleUnfollow}>Following</button>
+    } else {
+      return <button onClick={handleFollow}>Follow</button>
+    }
+  }
+}
+
+renderFollowButton()
+
+console.log('Follow State: ', followState)
+console.log(user)
 
   return (
     <div className="profile">
@@ -92,7 +135,7 @@ const handleFollow = async (e) => {
         <img src={image} />
         <div className="profile-buttons-container">
           <div className="profile-buttons">
-            <button onClick={handleFollow}>Follow</button>
+            {renderFollowButton()}
           </div>
         </div>
         <span className="profile-display">{user.displayName}</span> 

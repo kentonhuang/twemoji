@@ -18,7 +18,6 @@ router.post('/users', async (req, res) => {
     const token = await user.generateAuthToken()
     res.status(201).send({user, token})
   } catch (e) {
-    console.log(e)
     res.status(400).send(e)
   }
 })
@@ -29,7 +28,6 @@ router.post('/users/login', async (req, res) => {
     const token = await user.generateAuthToken()
     res.send({ user, token })
   } catch (e) {
-    console.log(e)
     res.status(400).send({error: 'Login Failed'})
   }
 })
@@ -68,7 +66,6 @@ router.get('/users', async (req, res) => {
 router.get('/user/following/:username', async (req, res) => {
   try {
     const user = await User.findOne({'username': req.params.username}).populate('follows').exec()
-    console.log(user)
     return res.status(200).send(user)
   } catch (e) {
     return res.status(400).send()
