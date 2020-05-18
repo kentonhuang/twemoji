@@ -41,17 +41,11 @@ const Home = () => {
         }).filter((id, index, self) => {
           return self.indexOf(id) === index
         })
-
-        console.log(userIds)
-
         const userList = await axios.get(usersUrl, {
           params: {
             ids: userIds
           }
         })
-
-        console.log(userList)
-
         await usersDispatch({
           type: 'GET_USERS',
           payload: {
@@ -62,6 +56,7 @@ const Home = () => {
       }catch(e) {
         setError(true)
       }
+
     }
     getData()
   }, [])

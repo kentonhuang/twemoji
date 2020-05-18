@@ -18,12 +18,11 @@ const Profile = () => {
 
   const usersUrl = 'http://localhost:3005/users'
   const url = `http://localhost:3005/tweets?username=${id}`
+  const followURL = `http://localhost:3005/following/${id}`
 
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState({})
   const [error, setError] = useState(false)
-
-
 
 // MOVE THIS TO ITS OWN FILE
   useEffect(() => {
@@ -75,8 +74,13 @@ const Profile = () => {
     getUser()
   }, [])
 
-const handleFollow = (e) => {
-  
+const handleFollow = async (e) => {
+  try {
+    const res = axios.post(followURL)
+    console.log(res)
+  } catch(e) {
+
+  }
 }
 
   return (

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link
 } from "react-router-dom"
+import axios from 'axios'
 import './App.css';
 
 import Home from './home/Home'
@@ -14,12 +15,30 @@ import Navigation from './component/Navigation'
 import AuthContext from './context/AuthContext'
 import TweetContext from './context/TweetsContext'
 import UsersContext from './context/UsersContext'
+import FollowContext from './context/FollowContext';
 
 const username = localStorage.getItem("username")
 const email = localStorage.getItem("email")
 const token = localStorage.getItem("token")
 const _id = localStorage.getItem("_id")
 const displayName = localStorage.getItem("displayName")
+
+const following = {
+  following: [],
+  followers: [],
+}
+
+const followReducer = (state, action) => {
+  switch(action.type) {
+    case 'GET_FOLLOWING':
+      return {
+        ...state,
+        following: action.payload.following
+      }
+    default:
+      return state
+  }
+}
 
 const initialUsers = {
   users: []
@@ -106,6 +125,35 @@ function App() {
   const [state, dispatch] = React.useReducer(reducer, initialState)
   const [tweetState, tweetDispatch] = React.useReducer(tweetReducer, initialTweets)
   const [usersState, usersDispatch] = React.useReducer(usersReducer, initialUsers)
+  const [followState, followDispatch] = React.useReducer(followReducer, following)
+
+  const followURL = `http://localhost:3005/user/following/${state.username}`
+
+  console.log(followState)
+
+  useEffect(() => {
+    const getFollow = async () => {
+      try {
+        const res = await axios.get(followURL, {
+          headers: {
+            'Authorization': `Bearer ${state.token}`
+          }
+        })
+        console.log(res.data.follows[0].following)
+        await followDispatch({
+          type: 'GET_FOLLOWING',
+          payload: {
+            following: res.data.follows[0].following
+          }
+        })
+      } catch(e) {
+        console.log(e)
+      }
+    }
+    if(state.isAuthenticated) {
+      getFollow()
+    }
+  }, [])
 
   return (
     <AuthContext.Provider
@@ -123,19 +171,25 @@ function App() {
           usersDispatch
         }}
         >
-          <div className="App">
-            <Router>
-              <Navigation auth={state}/>
-              <Switch>
-                <Route path="/profile/:id">
-                  <Profile/>
-                </Route>
-                <Route path="/">
-                  <Home/>
-                </Route>
-              </Switch>
-            </Router>
-          </div>
+          <FollowContext.Provider value ={{
+            followState,
+            followDispatch
+          }}
+          >
+            <div className="App">
+              <Router>
+                <Navigation auth={state}/>
+                <Switch>
+                  <Route path="/profile/:id">
+                    <Profile/>
+                  </Route>
+                  <Route path="/">
+                    <Home/>
+                  </Route>
+                </Switch>
+              </Router>
+            </div>
+          </FollowContext.Provider>
         </UsersContext.Provider>
       </TweetContext.Provider>
     </AuthContext.Provider>
