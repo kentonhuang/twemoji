@@ -3,3 +3,22 @@
   min-height: 75px;
   width: 100%;
 }
+
+.emoji-keyboard {
+  width: 35px;
+  margin-top: -5px;
+  margin-bottom: -7px;
+}
+
+.tweet-button {
+  margin-top: -10px;
+}
+
+.tweet-keyboard {
+  display: inline-block;
+  position: relative;
+}
+
+.form {
+  position: relative;
+}

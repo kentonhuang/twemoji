@@ -16,6 +16,10 @@
   text-align: center;
 }
 
+.avatar:hover {
+  cursor: pointer
+}
+
 .image {
   width: 50px;
   height: 50px;
@@ -30,6 +34,18 @@
 
 .content-info {
   height: 25px;
+}
+
+.content-info-name {
+  display: inline-block
+}
+
+.content-info-name:hover {
+  cursor: pointer
+}
+
+.content-info-name:hover .display-name {
+  text-decoration: underline;
 }
 
 .display-name {

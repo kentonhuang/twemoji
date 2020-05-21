@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useContext} from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
+import moment from 'moment'
 import './Profile.css'
 
 import TweetsContext from '../context/TweetsContext'
@@ -31,6 +32,7 @@ const Profile = () => {
 
 // MOVE THIS TO ITS OWN FILE
   useEffect(() => {
+
     const getUser = async () => {
       try {
         const res = await axios.get(usersUrl + '/' + id)
@@ -77,7 +79,7 @@ const Profile = () => {
     }
     getData()
     getUser()
-  }, [])
+  }, [id])
 
 const handleFollow = async () => {
   try {
@@ -113,6 +115,9 @@ const handleUnfollow = async () => {
 
 const renderFollowButton = () => {
   if(user) {
+    if(state._id === user._id) {
+      return <button disabled>This is You!!!</button>
+    }
     if(followState.following.find((ele) => ele.user_id === user._id)) {
       return <button onClick={handleUnfollow}>Following</button>
     } else {
@@ -122,9 +127,6 @@ const renderFollowButton = () => {
 }
 
 renderFollowButton()
-
-console.log('Follow State: ', followState)
-console.log(user)
 
   return (
     <div className="profile">
@@ -140,6 +142,12 @@ console.log(user)
         </div>
         <span className="profile-display">{user.displayName}</span> 
         <span className="profile-username">{'@' + user.username}</span>
+        <span>{moment(user.createdAt).format('MMM YYYY')}</span>
+        <div>
+          <span>{} Following</span>
+          <span>Followers</span>
+        </div>
+        <div></div>
       </div>
       {loading ? (
         <div>Loading</div>
