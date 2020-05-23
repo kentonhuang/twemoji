@@ -1,0 +1,16 @@
+.navbar {
+  display:block;
+  display:flex;
+  height: 50px;
+}
+
+.navbar-button {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-button:hover {
+  background-color: #eeeeee;
+}

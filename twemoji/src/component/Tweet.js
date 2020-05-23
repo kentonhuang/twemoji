@@ -1,5 +1,4 @@
 import React from 'react'
-import twemoji from 'twemoji'
 import { Twemoji } from 'react-emoji-render'
 import { useHistory } from 'react-router-dom'
 import './Tweet.css'

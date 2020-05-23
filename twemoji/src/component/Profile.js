@@ -10,6 +10,7 @@ import FollowContext from '../context/FollowContext'
 import AuthContext from '../context/AuthContext'
 
 import TweetContainer from './TweetContainer'
+import Navbar from './Navbar';
 
 import image from '../icon/Twitter_egg_avatar.png'
 
@@ -29,6 +30,23 @@ const Profile = () => {
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState({})
   const [error, setError] = useState(false)
+  const [viewState, setView] = useState(0)
+  const [navElements, setNavElements] = useState([{
+    name: 'Tweets',
+    style: {
+      borderBottom: '3px solid blue'
+    },
+  }, {
+    name: 'Tweets & Replies',
+    style: {
+      borderBottom: '1px solid #333333'
+    }
+  }, {
+    name: 'Likes',
+    style: {
+      borderBottom: '1px solid #333333'
+    }
+  }])
 
 // MOVE THIS TO ITS OWN FILE
   useEffect(() => {
@@ -126,6 +144,12 @@ const renderFollowButton = () => {
   }
 }
 
+const setViewState = (activeTab, index) => {
+  navElements[viewState].style = {borderBottom: '1px solid #cccccc'}
+  setView(index)
+  navElements[index].style = {borderBottom: '3px solid blue'}
+}
+
 renderFollowButton()
 
   return (
@@ -149,6 +173,7 @@ renderFollowButton()
         </div>
         <div></div>
       </div>
+      <Navbar elements={navElements} callback={setViewState}/>
       {loading ? (
         <div>Loading</div>
       ) : (

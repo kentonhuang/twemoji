@@ -88,12 +88,12 @@ const TweetBox = () => {
   return (
     <div>
       <button onClick={handleClick}>Logout</button>
-      <form class="form" onSubmit={sendTweet}>
+      <form className="form" onSubmit={sendTweet}>
         <TextareaAutosize onChange={tweetChange} value={tweetContent} className="textbox"/>
-        <div class="tweet-controls">
-          <button class="tweet-button" type="submit">Tweet</button>
-          <div class="tweet-keyboard">
-            <img onClick={handleKeyboardClick}class="emoji-keyboard" src={smileyFace} alt="Emoji Logo" />
+        <div className="tweet-controls">
+          <button className="tweet-button" type="submit">Tweet</button>
+          <div className="tweet-keyboard">
+            <img onClick={handleKeyboardClick} className="emoji-keyboard" src={smileyFace} alt="Emoji Logo" />
             {toggleKeyboard ? <Picker style={{position: 'absolute', top: '30px', left: '5px'}} onSelect={selectEmoji} set='twitter'/> : null}
           </div>
         </div>

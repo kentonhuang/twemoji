@@ -6,6 +6,8 @@ import TweetsContext from '../context/TweetsContext';
 import AuthContext from '../context/AuthContext';
 import UsersContext from '../context/UsersContext'
 
+import Navbar from '../component/Navbar';
+
 import './Home.css'
 import TopContainer from '../component/TopContainer';
 import TweetContainer from '../component/TweetContainer';
@@ -21,6 +23,18 @@ const Home = () => {
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const [viewTweet, setViewTweet] = useState(0)
+  const [navElements, setNavElements] = useState([{
+    name: 'All',
+    style: {
+      borderBottom: '3px solid blue'
+    },
+  }, {
+    name: 'Following',
+    style: {
+      borderBottom: '1px solid #333333'
+    }
+  }])
 
   useEffect(() => {
     const getData = async () => {
@@ -61,9 +75,16 @@ const Home = () => {
     getData()
   }, [])
 
+  const setViewState = (activeTab, index) => {
+    navElements[viewTweet].style = {borderBottom: '1px solid #cccccc'}
+    setViewTweet(index)
+    navElements[index].style = {borderBottom: '3px solid blue'}
+  }
+
   return (
     <div className="Home">
       <TopContainer />
+      <Navbar elements={navElements} callback={setViewState}/>
       {loading ? (
         <div>Loading</div>
       ) : (
