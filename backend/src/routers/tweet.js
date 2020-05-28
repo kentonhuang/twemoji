@@ -24,6 +24,19 @@ router.get('/tweets', async (req, res) => {
 
   const query = {}
 
+  if(req.query.following) {
+    try {
+      const userFollowing = await User.findOne({'username': req.query.following}).populate('follows').exec()
+      const followArr = userFollowing.follows[0].following.map((ele) => {
+        return ele.user_id
+      })
+      const tweets = await Tweet.find(query).where('owner').in(followArr).limit(20).sort({createdAt: -1}).exec()
+      return res.send(tweets)
+    } catch (e) {
+      res.status(400).send(e)
+    }
+  }
+
   if(req.query.username) {
     try {
       const user = await User.find({'username': req.query.username}).exec()
@@ -32,6 +45,7 @@ router.get('/tweets', async (req, res) => {
       res.status(400).send(e)
     }
   }
+
   try {
     const tweets = await Tweet.find(query)
     .limit(20)

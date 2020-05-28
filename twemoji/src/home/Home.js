@@ -25,7 +25,7 @@ const Home = () => {
   const [error, setError] = useState(false)
   const [viewTweet, setViewTweet] = useState(0)
   const [navElements, setNavElements] = useState([{
-    name: 'All',
+    name: 'All Tweets',
     style: {
       borderBottom: '3px solid blue'
     },
@@ -36,36 +36,63 @@ const Home = () => {
     }
   }])
 
+  const getTweetsAndUsers = async (url) => {
+    const res = await axios.get(url)
+    const payload = {
+      tweets: res.data
+    }
+    await tweetDispatch({
+      type: 'GET_TWEETS',
+      payload
+    })
+    const userIds = res.data.map((tweet) => {
+      return tweet.owner
+    }).filter((id, index, self) => {
+      return self.indexOf(id) === index
+    })
+    const userList = await axios.get(usersUrl, {
+      params: {
+        ids: userIds
+      }
+    })
+    await usersDispatch({
+      type: 'GET_USERS',
+      payload: {
+        users: userList.data
+      }
+    })
+  }
+
   useEffect(() => {
+    if(!state.isAuthenticated) {
+      setNavElements([{
+        name: 'All Tweets',
+        style: {
+          borderBottom: '3px solid blue'
+        },
+      }])
+      setViewState('All', 0)
+    }
+    else if(state.isAuthenticated) {
+      setNavElements([{
+        name: 'All Tweets',
+        style: {
+          borderBottom: '3px solid blue'
+        },
+      }, {
+        name: 'Following',
+        style: {
+          borderBottom: '1px solid #333333'
+        }
+      }])
+    }
+
     const getData = async () => {
       setError(false)
       setLoading(true)
 
-      try {
-        const res = await axios.get(url)
-        const payload = {
-          tweets: res.data
-        }
-        await tweetDispatch({
-          type: 'GET_TWEETS',
-          payload
-        })
-        const userIds = res.data.map((tweet) => {
-          return tweet.owner
-        }).filter((id, index, self) => {
-          return self.indexOf(id) === index
-        })
-        const userList = await axios.get(usersUrl, {
-          params: {
-            ids: userIds
-          }
-        })
-        await usersDispatch({
-          type: 'GET_USERS',
-          payload: {
-            users: userList.data
-          }
-        })
+      try { 
+        getTweetsAndUsers(url)
         return setLoading(false)
       }catch(e) {
         setError(true)
@@ -73,10 +100,21 @@ const Home = () => {
 
     }
     getData()
-  }, [])
+  }, [state])
 
-  const setViewState = (activeTab, index) => {
+  const setViewState = async (activeTab, index) => {
     navElements[viewTweet].style = {borderBottom: '1px solid #cccccc'}
+    if(index === 0) {
+      getTweetsAndUsers(url)
+    }
+    if(index === 1) {
+      if(state.username){
+        getTweetsAndUsers(url + '?following=' + state.username)
+      }
+      else {
+        
+      }
+    }
     setViewTweet(index)
     navElements[index].style = {borderBottom: '3px solid blue'}
   }
