@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const Following = require('./following')
+const Follower = require('./followers')
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -54,6 +55,12 @@ const userSchema = new mongoose.Schema({
 
 userSchema.virtual('follows', {
   ref: 'Following',
+  localField: 'username',
+  foreignField: 'username'
+})
+
+userSchema.virtual('followers', {
+  ref: 'Follower',
   localField: 'username',
   foreignField: 'username'
 })
